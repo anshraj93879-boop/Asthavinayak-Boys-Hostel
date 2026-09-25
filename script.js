@@ -1,885 +1,733 @@
 /* =========================================================
    ASTHAVINAYAK BOYS HOSTEL
-   Premium Website JavaScript
-   ========================================================= */
+   MAIN JAVASCRIPT
+========================================================= */
 
 
 /* =========================================================
-   01. DOM READY
-   ========================================================= */
+   PRELOADER
+========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+(function () {
 
-    /* =====================================================
-       02. AOS SCROLL ANIMATIONS
-       ===================================================== */
+    const preloader =
+        document.getElementById("preloader");
 
-    if (typeof AOS !== "undefined") {
+    if (!preloader) return;
 
-        AOS.init({
-            duration: 900,
-            easing: "ease-out-cubic",
-            once: true,
-            offset: 80,
-            delay: 0
-        });
-
-    }
-
-
-    /* =====================================================
-       03. PRELOADER
-       ===================================================== */
-
-    const preloader = document.getElementById("preloader");
-
-    const hidePreloader = () => {
-
-        if (!preloader) return;
+    function hidePreloader() {
 
         preloader.classList.add("hide");
 
-        setTimeout(() => {
+        setTimeout(function () {
 
             preloader.style.display = "none";
 
         }, 700);
 
-    };
-
+    }
 
     if (document.readyState === "complete") {
 
-        setTimeout(hidePreloader, 500);
+        setTimeout(hidePreloader, 400);
 
     } else {
 
-        window.addEventListener("load", () => {
+        window.addEventListener(
+            "load",
+            function () {
 
-            setTimeout(hidePreloader, 500);
+                setTimeout(
+                    hidePreloader,
+                    400
+                );
 
-        });
+            }
+        );
 
     }
 
+    /* Safety fallback:
+       Preloader will never remain
+       stuck permanently. */
 
-    /* =====================================================
-       04. NAVBAR
-       ===================================================== */
+    setTimeout(
+        hidePreloader,
+        2500
+    );
 
-    const navbar = document.querySelector(".navbar");
+})();
 
-    const updateNavbar = () => {
 
-        if (!navbar) return;
+/* =========================================================
+   DOM READY
+========================================================= */
 
-        if (window.scrollY > 50) {
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-            navbar.classList.add("scrolled");
 
-        } else {
+        /* =================================================
+           ELEMENTS
+        ================================================= */
 
-            navbar.classList.remove("scrolled");
+        const header =
+            document.getElementById("header");
+
+        const menuBtn =
+            document.getElementById("menuBtn");
+
+        const navLinks =
+            document.getElementById("navLinks");
+
+        const enquiryForm =
+            document.getElementById("enquiryForm");
+
+        const year =
+            document.getElementById("year");
+
+
+        /* =================================================
+           CURRENT YEAR
+        ================================================= */
+
+        if (year) {
+
+            year.textContent =
+                new Date().getFullYear();
 
         }
 
-    };
 
+        /* =================================================
+           MOBILE NAVIGATION
+        ================================================= */
 
-    updateNavbar();
+        if (menuBtn && navLinks) {
 
-    window.addEventListener("scroll", updateNavbar, {
-        passive: true
-    });
+            menuBtn.addEventListener(
+                "click",
+                function () {
 
+                    navLinks.classList.toggle(
+                        "active"
+                    );
 
-    /* =====================================================
-       05. MOBILE MENU
-       ===================================================== */
+                    const icon =
+                        menuBtn.querySelector("i");
 
-    const menuBtn = document.querySelector(".menu-btn");
-    const navLinks = document.querySelector(".nav-links");
+                    if (!icon) return;
 
-    if (menuBtn && navLinks) {
+                    if (
+                        navLinks.classList.contains(
+                            "active"
+                        )
+                    ) {
 
-        menuBtn.addEventListener("click", () => {
+                        icon.classList.remove(
+                            "fa-bars"
+                        );
 
-            navLinks.classList.toggle("active");
+                        icon.classList.add(
+                            "fa-xmark"
+                        );
 
-            const icon = menuBtn.querySelector("i");
+                    } else {
 
-            if (!icon) return;
+                        icon.classList.remove(
+                            "fa-xmark"
+                        );
 
-            if (navLinks.classList.contains("active")) {
+                        icon.classList.add(
+                            "fa-bars"
+                        );
 
-                icon.classList.remove("fa-bars");
-                icon.classList.add("fa-xmark");
-
-            } else {
-
-                icon.classList.remove("fa-xmark");
-                icon.classList.add("fa-bars");
-
-            }
-
-        });
-
-
-        /* Close menu after clicking a link */
-
-        navLinks.querySelectorAll("a").forEach((link) => {
-
-            link.addEventListener("click", () => {
-
-                navLinks.classList.remove("active");
-
-                const icon = menuBtn.querySelector("i");
-
-                if (icon) {
-
-                    icon.classList.remove("fa-xmark");
-                    icon.classList.add("fa-bars");
+                    }
 
                 }
-
-            });
-
-        });
-
-    }
+            );
 
 
-    /* =====================================================
-       06. SMOOTH SCROLL
-       ===================================================== */
+            /* Close menu after clicking link */
 
-    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+            navLinks
+                .querySelectorAll("a")
+                .forEach(function (link) {
 
-        link.addEventListener("click", (event) => {
+                    link.addEventListener(
+                        "click",
+                        function () {
 
-            const targetId = link.getAttribute("href");
+                            navLinks.classList.remove(
+                                "active"
+                            );
 
-            if (!targetId || targetId === "#") return;
+                            const icon =
+                                menuBtn.querySelector("i");
 
-            const target = document.querySelector(targetId);
+                            if (!icon) return;
 
-            if (!target) return;
+                            icon.classList.remove(
+                                "fa-xmark"
+                            );
 
-            event.preventDefault();
+                            icon.classList.add(
+                                "fa-bars"
+                            );
 
-            const navbarHeight = navbar
-                ? navbar.offsetHeight + 20
-                : 20;
-
-            const targetPosition =
-                target.getBoundingClientRect().top +
-                window.scrollY -
-                navbarHeight;
-
-            window.scrollTo({
-                top: targetPosition,
-                behavior: "smooth"
-            });
-
-        });
-
-    });
-
-
-    /* =====================================================
-       07. HERO VIDEO
-       ===================================================== */
-
-    const heroVideo = document.querySelector(".hero video");
-
-    if (heroVideo) {
-
-        heroVideo.muted = true;
-
-        const playVideo = () => {
-
-            const playPromise = heroVideo.play();
-
-            if (
-                playPromise !== undefined &&
-                typeof playPromise.catch === "function"
-            ) {
-
-                playPromise.catch(() => {
-
-                    /*
-                     Some mobile browsers may block
-                     autoplay. The website still works
-                     normally with the video fallback.
-                    */
+                        }
+                    );
 
                 });
 
-            }
+        }
 
-        };
 
-        playVideo();
+        /* =================================================
+           HEADER SCROLL EFFECT
+        ================================================= */
 
-        document.addEventListener(
-            "visibilitychange",
-            () => {
+        function updateHeader() {
 
-                if (
-                    document.visibilityState === "visible" &&
-                    heroVideo.paused
-                ) {
+            if (!header) return;
 
-                    playVideo();
+            if (window.scrollY > 40) {
 
-                }
+                header.classList.add(
+                    "scrolled"
+                );
 
-            }
-        );
+            } else {
 
-    }
-
-
-    /* =====================================================
-       08. GALLERY LIGHTBOX
-       ===================================================== */
-
-    const galleryItems =
-        document.querySelectorAll(".gallery-item");
-
-    const lightbox =
-        document.getElementById("lightbox");
-
-    const lightboxImage =
-        document.getElementById("lightbox-image");
-
-    const lightboxClose =
-        document.querySelector(".lightbox-close");
-
-    const lightboxPrev =
-        document.querySelector(".lightbox-prev");
-
-    const lightboxNext =
-        document.querySelector(".lightbox-next");
-
-
-    let currentGalleryIndex = 0;
-
-
-    const galleryImages = Array.from(galleryItems)
-        .map((item) => {
-
-            const image = item.querySelector("img");
-
-            return image
-                ? {
-                    src: image.src,
-                    alt: image.alt || "Gallery Image"
-                }
-                : null;
-
-        })
-        .filter(Boolean);
-
-
-    const updateLightbox = () => {
-
-        if (!lightboxImage || !galleryImages.length) return;
-
-        const currentImage =
-            galleryImages[currentGalleryIndex];
-
-        lightboxImage.src = currentImage.src;
-        lightboxImage.alt = currentImage.alt;
-
-    };
-
-
-    const openLightbox = (index) => {
-
-        if (!lightbox || !galleryImages.length) return;
-
-        currentGalleryIndex = index;
-
-        updateLightbox();
-
-        lightbox.classList.add("active");
-
-        document.body.classList.add("no-scroll");
-
-    };
-
-
-    const closeLightbox = () => {
-
-        if (!lightbox) return;
-
-        lightbox.classList.remove("active");
-
-        document.body.classList.remove("no-scroll");
-
-    };
-
-
-    const showNextImage = () => {
-
-        if (!galleryImages.length) return;
-
-        currentGalleryIndex =
-            (currentGalleryIndex + 1) %
-            galleryImages.length;
-
-        updateLightbox();
-
-    };
-
-
-    const showPreviousImage = () => {
-
-        if (!galleryImages.length) return;
-
-        currentGalleryIndex =
-            (currentGalleryIndex - 1 + galleryImages.length) %
-            galleryImages.length;
-
-        updateLightbox();
-
-    };
-
-
-    galleryItems.forEach((item, index) => {
-
-        item.addEventListener("click", () => {
-
-            openLightbox(index);
-
-        });
-
-    });
-
-
-    if (lightboxClose) {
-
-        lightboxClose.addEventListener(
-            "click",
-            closeLightbox
-        );
-
-    }
-
-
-    if (lightboxNext) {
-
-        lightboxNext.addEventListener(
-            "click",
-            showNextImage
-        );
-
-    }
-
-
-    if (lightboxPrev) {
-
-        lightboxPrev.addEventListener(
-            "click",
-            showPreviousImage
-        );
-
-    }
-
-
-    if (lightbox) {
-
-        lightbox.addEventListener("click", (event) => {
-
-            if (event.target === lightbox) {
-
-                closeLightbox();
+                header.classList.remove(
+                    "scrolled"
+                );
 
             }
 
-        });
-
-    }
-
-
-    /* =====================================================
-       09. KEYBOARD CONTROLS FOR LIGHTBOX
-       ===================================================== */
-
-    document.addEventListener("keydown", (event) => {
-
-        if (!lightbox ||
-            !lightbox.classList.contains("active")) {
-
-            return;
-
         }
 
+        updateHeader();
 
-        if (event.key === "Escape") {
-
-            closeLightbox();
-
-        }
-
-
-        if (event.key === "ArrowRight") {
-
-            showNextImage();
-
-        }
+        window.addEventListener(
+            "scroll",
+            updateHeader,
+            { passive: true }
+        );
 
 
-        if (event.key === "ArrowLeft") {
+        /* =================================================
+           SMOOTH SCROLL
+        ================================================= */
 
-            showPreviousImage();
+        document
+            .querySelectorAll('a[href^="#"]')
+            .forEach(function (link) {
 
-        }
+                link.addEventListener(
+                    "click",
+                    function (event) {
 
-    });
+                        const targetId =
+                            this.getAttribute("href");
 
+                        if (
+                            !targetId ||
+                            targetId === "#"
+                        ) return;
 
-    /* =====================================================
-       10. BACK TO TOP
-       ===================================================== */
+                        const target =
+                            document.querySelector(
+                                targetId
+                            );
 
-    const backToTop =
-        document.getElementById("back-to-top");
+                        if (!target) return;
 
+                        event.preventDefault();
 
-    const updateBackToTop = () => {
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start"
+                        });
 
-        if (!backToTop) return;
+                    }
+                );
 
-        if (window.scrollY > 600) {
-
-            backToTop.classList.add("show");
-
-        } else {
-
-            backToTop.classList.remove("show");
-
-        }
-
-    };
-
-
-    updateBackToTop();
-
-    window.addEventListener("scroll", updateBackToTop, {
-        passive: true
-    });
-
-
-    if (backToTop) {
-
-        backToTop.addEventListener("click", () => {
-
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
             });
 
-        });
 
-    }
+        /* =================================================
+           REVEAL ON SCROLL
+        ================================================= */
 
-
-    /* =====================================================
-       11. CURRENT YEAR
-       ===================================================== */
-
-    const currentYear =
-        document.getElementById("current-year");
+        const revealElements =
+            document.querySelectorAll(
+                ".reveal"
+            );
 
 
-    if (currentYear) {
+        if (
+            "IntersectionObserver"
+            in window
+        ) {
 
-        currentYear.textContent =
-            new Date().getFullYear();
+            const revealObserver =
+                new IntersectionObserver(
+                    function (
+                        entries,
+                        observer
+                    ) {
 
-    }
+                        entries.forEach(
+                            function (entry) {
 
+                                if (
+                                    entry.isIntersecting
+                                ) {
 
-    /* =====================================================
-       12. PHONE NUMBER VALIDATION
-       ===================================================== */
+                                    entry.target.classList.add(
+                                        "visible"
+                                    );
 
-    const phoneInput =
-        document.getElementById("phone");
+                                    observer.unobserve(
+                                        entry.target
+                                    );
 
+                                }
 
-    if (phoneInput) {
+                            }
+                        );
 
-        phoneInput.addEventListener("input", () => {
-
-            phoneInput.value =
-                phoneInput.value.replace(/\D/g, "")
-                    .slice(0, 10);
-
-        });
-
-    }
-
-
-    /* =====================================================
-       13. ENQUIRY FORM
-       ===================================================== */
-
-    const enquiryForm =
-        document.getElementById("enquiry-form");
-
-    const formStatus =
-        document.getElementById("form-status");
-
-
-    if (enquiryForm) {
-
-        enquiryForm.addEventListener(
-            "submit",
-            async (event) => {
-
-                event.preventDefault();
-
-
-                const submitButton =
-                    enquiryForm.querySelector(
-                        ".submit-btn"
-                    );
-
-
-                const name =
-                    document.getElementById("name")
-                        ?.value.trim();
-
-                const phone =
-                    document.getElementById("phone")
-                        ?.value.trim();
-
-                const institute =
-                    document.getElementById("institute")
-                        ?.value;
-
-                const room =
-                    document.getElementById("room")
-                        ?.value;
-
-                const message =
-                    document.getElementById("message")
-                        ?.value.trim();
-
-
-                /* Basic validation */
-
-                if (!name || !phone || !institute || !room) {
-
-                    if (formStatus) {
-
-                        formStatus.textContent =
-                            "Please fill in all required fields.";
-
-                        formStatus.style.color =
-                            "#ff7777";
-
+                    },
+                    {
+                        threshold: 0.12
                     }
-
-                    return;
-
-                }
-
-
-                if (!/^[0-9]{10}$/.test(phone)) {
-
-                    if (formStatus) {
-
-                        formStatus.textContent =
-                            "Please enter a valid 10-digit phone number.";
-
-                        formStatus.style.color =
-                            "#ff7777";
-
-                    }
-
-                    return;
-
-                }
-
-
-                /*
-                 * EmailJS connection will be added later.
-                 *
-                 * For now we create the enquiry object
-                 * and prepare the form for EmailJS.
-                 */
-
-
-                const enquiryData = {
-
-                    name,
-                    phone,
-                    institute,
-                    room,
-                    message
-
-                };
-
-
-                console.log(
-                    "Hostel Enquiry:",
-                    enquiryData
                 );
 
 
-                if (submitButton) {
+            revealElements.forEach(
+                function (element) {
 
-                    submitButton.disabled = true;
-
-                    submitButton.innerHTML =
-                        `
-                        Sending
-                        <i class="fa-solid fa-spinner fa-spin"></i>
-                        `;
+                    revealObserver.observe(
+                        element
+                    );
 
                 }
+            );
 
+        } else {
 
-                /*
-                 * Temporary local success state.
-                 *
-                 * EmailJS will replace this part once
-                 * your EmailJS Service ID, Template ID
-                 * and Public Key are added.
-                 */
+            revealElements.forEach(
+                function (element) {
 
-
-                setTimeout(() => {
-
-                    if (formStatus) {
-
-                        formStatus.textContent =
-                            "Enquiry received. We will contact you shortly.";
-
-                        formStatus.style.color =
-                            "#d4af37";
-
-                    }
-
-
-                    enquiryForm.reset();
-
-
-                    if (submitButton) {
-
-                        submitButton.disabled = false;
-
-                        submitButton.innerHTML =
-                            `
-                            Send Enquiry
-                            <i class="fa-solid fa-arrow-right"></i>
-                            `;
-
-                    }
-
-                }, 900);
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       14. ROOM CARD INTERACTION
-       ===================================================== */
-
-    const roomCards =
-        document.querySelectorAll(".room-card");
-
-
-    roomCards.forEach((card) => {
-
-        card.addEventListener("mouseenter", () => {
-
-            roomCards.forEach((otherCard) => {
-
-                if (otherCard !== card) {
-
-                    otherCard.style.opacity = "0.72";
+                    element.classList.add(
+                        "visible"
+                    );
 
                 }
-
-            });
-
-        });
-
-
-        card.addEventListener("mouseleave", () => {
-
-            roomCards.forEach((otherCard) => {
-
-                otherCard.style.opacity = "1";
-
-            });
-
-        });
-
-    });
-
-
-    /* =====================================================
-       15. FACILITY CARD INTERACTION
-       ===================================================== */
-
-    const facilityCards =
-        document.querySelectorAll(".facility-card");
-
-
-    facilityCards.forEach((card) => {
-
-        card.addEventListener("mouseenter", () => {
-
-            const icon =
-                card.querySelector("i");
-
-            if (icon) {
-
-                icon.style.transform =
-                    "scale(1.12)";
-
-                icon.style.transition =
-                    "transform 0.3s ease";
-
-            }
-
-        });
-
-
-        card.addEventListener("mouseleave", () => {
-
-            const icon =
-                card.querySelector("i");
-
-            if (icon) {
-
-                icon.style.transform =
-                    "scale(1)";
-
-            }
-
-        });
-
-    });
-
-
-    /* =====================================================
-       16. CONTACT FORM PHONE INPUT
-       ===================================================== */
-
-    const phoneField =
-        document.getElementById("phone");
-
-
-    if (phoneField) {
-
-        phoneField.addEventListener(
-            "keypress",
-            (event) => {
-
-                if (!/[0-9]/.test(event.key)) {
-
-                    event.preventDefault();
-
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       17. IMAGE ERROR HANDLING
-       ===================================================== */
-
-    document.querySelectorAll("img").forEach((image) => {
-
-        image.addEventListener("error", () => {
-
-            image.classList.add("image-error");
-
-        });
-
-    });
-
-
-    /* =====================================================
-       18. ESCAPE MOBILE MENU
-       ===================================================== */
-
-    document.addEventListener("keydown", (event) => {
-
-        if (event.key !== "Escape") return;
-
-        if (!navLinks || !menuBtn) return;
-
-        navLinks.classList.remove("active");
-
-        const icon =
-            menuBtn.querySelector("i");
-
-        if (icon) {
-
-            icon.classList.remove("fa-xmark");
-            icon.classList.add("fa-bars");
+            );
 
         }
 
-    });
+
+        /* =================================================
+           FAQ ACCORDION
+        ================================================= */
+
+        const faqButtons =
+            document.querySelectorAll(
+                ".faq button"
+            );
 
 
-    /* =====================================================
-       19. PREVENT FORM DOUBLE SUBMISSION
-       ===================================================== */
+        faqButtons.forEach(
+            function (button) {
 
-    if (enquiryForm) {
+                button.addEventListener(
+                    "click",
+                    function () {
 
-        enquiryForm.addEventListener(
-            "submit",
-            () => {
+                        const currentFaq =
+                            this.closest(".faq");
 
-                const button =
-                    enquiryForm.querySelector(
-                        ".submit-btn"
-                    );
+                        if (!currentFaq) return;
 
-                if (button) {
 
-                    button.setAttribute(
-                        "data-submitted",
-                        "true"
-                    );
+                        /* Close other FAQs */
+
+                        document
+                            .querySelectorAll(
+                                ".faq.open"
+                            )
+                            .forEach(
+                                function (faq) {
+
+                                    if (
+                                        faq !==
+                                        currentFaq
+                                    ) {
+
+                                        faq.classList.remove(
+                                            "open"
+                                        );
+
+                                    }
+
+                                }
+                            );
+
+
+                        /* Toggle current FAQ */
+
+                        currentFaq.classList.toggle(
+                            "open"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           GALLERY LIGHTBOX
+        ================================================= */
+
+        const lightbox =
+            document.getElementById(
+                "lightbox"
+            );
+
+        const lightboxImage =
+            document.getElementById(
+                "lightboxImage"
+            );
+
+        const lightboxClose =
+            document.getElementById(
+                "lightboxClose"
+            );
+
+        const galleryItems =
+            document.querySelectorAll(
+                ".gallery-item[data-image]"
+            );
+
+
+        function openLightbox(
+            imageSrc
+        ) {
+
+            if (
+                !lightbox ||
+                !lightboxImage
+            ) return;
+
+            lightboxImage.src =
+                imageSrc;
+
+            lightbox.classList.add(
+                "show"
+            );
+
+            document.body.classList.add(
+                "lock"
+            );
+
+        }
+
+
+        function closeLightbox() {
+
+            if (!lightbox) return;
+
+            lightbox.classList.remove(
+                "show"
+            );
+
+            document.body.classList.remove(
+                "lock"
+            );
+
+        }
+
+
+        galleryItems.forEach(
+            function (item) {
+
+                item.addEventListener(
+                    "click",
+                    function () {
+
+                        const image =
+                            this.getAttribute(
+                                "data-image"
+                            );
+
+                        if (image) {
+
+                            openLightbox(
+                                image
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        if (lightboxClose) {
+
+            lightboxClose.addEventListener(
+                "click",
+                closeLightbox
+            );
+
+        }
+
+
+        if (lightbox) {
+
+            lightbox.addEventListener(
+                "click",
+                function (event) {
+
+                    if (
+                        event.target ===
+                        lightbox
+                    ) {
+
+                        closeLightbox();
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    closeLightbox();
 
                 }
 
             }
         );
 
+
+        /* =================================================
+           ENQUIRY FORM
+        ================================================= */
+
+        if (enquiryForm) {
+
+            enquiryForm.addEventListener(
+                "submit",
+                function (event) {
+
+                    event.preventDefault();
+
+
+                    const name =
+                        document
+                            .getElementById(
+                                "name"
+                            )
+                            ?.value
+                            .trim();
+
+
+                    const phone =
+                        document
+                            .getElementById(
+                                "phone"
+                            )
+                            ?.value
+                            .trim();
+
+
+                    const institute =
+                        document
+                            .getElementById(
+                                "institute"
+                            )
+                            ?.value;
+
+
+                    const room =
+                        document
+                            .getElementById(
+                                "room"
+                            )
+                            ?.value;
+
+
+                    const message =
+                        document
+                            .getElementById(
+                                "message"
+                            )
+                            ?.value
+                            .trim();
+
+
+                    /* Validate */
+
+                    if (
+                        !name ||
+                        !phone ||
+                        !institute ||
+                        !room
+                    ) {
+
+                        alert(
+                            "Please fill all required fields."
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (
+                        !/^[0-9]{10}$/.test(
+                            phone
+                        )
+                    ) {
+
+                        alert(
+                            "Please enter a valid 10-digit phone number."
+                        );
+
+                        return;
+
+                    }
+
+
+                    /* WhatsApp message */
+
+                    let whatsappMessage =
+                        "Hello Asthavinayak Boys Hostel,%0A%0A";
+
+
+                    whatsappMessage +=
+                        "*New Room Enquiry*%0A%0A";
+
+
+                    whatsappMessage +=
+                        "Name: " +
+                        encodeURIComponent(
+                            name
+                        ) +
+                        "%0A";
+
+
+                    whatsappMessage +=
+                        "Phone: " +
+                        encodeURIComponent(
+                            phone
+                        ) +
+                        "%0A";
+
+
+                    whatsappMessage +=
+                        "Institute: " +
+                        encodeURIComponent(
+                            institute
+                        ) +
+                        "%0A";
+
+
+                    whatsappMessage +=
+                        "Room: " +
+                        encodeURIComponent(
+                            room
+                        ) +
+                        "%0A";
+
+
+                    if (message) {
+
+                        whatsappMessage +=
+                            "Message: " +
+                            encodeURIComponent(
+                                message
+                            ) +
+                            "%0A";
+
+                    }
+
+
+                    whatsappMessage +=
+                        "%0AThank you.";
+
+
+                    const whatsappURL =
+                        "https://wa.me/919471405852?text=" +
+                        whatsappMessage;
+
+
+                    window.open(
+                        whatsappURL,
+                        "_blank"
+                    );
+
+
+                    /* Reset form */
+
+                    enquiryForm.reset();
+
+                }
+            );
+
+        }
+
+
+        /* =================================================
+           PHONE INPUT
+        ================================================= */
+
+        const phoneInput =
+            document.getElementById(
+                "phone"
+            );
+
+
+        if (phoneInput) {
+
+            phoneInput.addEventListener(
+                "input",
+                function () {
+
+                    this.value =
+                        this.value
+                            .replace(
+                                /[^0-9]/g,
+                                ""
+                            )
+                            .slice(
+                                0,
+                                10
+                            );
+
+                }
+            );
+
+        }
+
+
     }
-
-
-    /* =====================================================
-       20. INITIALIZE
-       ===================================================== */
-
-    console.log(
-        "%cASTHAVINAYAK BOYS HOSTEL",
-        "color:#d4af37;font-size:20px;font-weight:bold;"
-    );
-
-    console.log(
-        "%cPremium website initialized successfully.",
-        "color:#aaa;font-size:12px;"
-    );
-
-});
+);
